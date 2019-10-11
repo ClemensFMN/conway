@@ -41,8 +41,8 @@ void GameWidget::stopGame()
 
 void GameWidget::clear()
 {
-    for(int k = 1; k <= universeSize; k++) {
-        for(int j = 1; j <= universeSize; j++) {
+    for(size_t k = 1; k <= universeSize; k++) {
+        for(size_t j = 1; j <= universeSize; j++) {
             universe[getIndex(k,j)] = false;
         }
     }
@@ -50,12 +50,12 @@ void GameWidget::clear()
     update();
 }
 
-int GameWidget::cellNumber()
+size_t GameWidget::cellNumber()
 {
     return universeSize;
 }
 
-void GameWidget::setCellNumber(const int &s)
+void GameWidget::setCellNumber(const size_t &s)
 {
     universeSize = s;
     resetUniverse();
@@ -72,7 +72,7 @@ void GameWidget::resetUniverse()
     memset(next, false, sizeof(bool)*(universeSize + 2) * (universeSize + 2));
 }
 
-int GameWidget::getIndex(int k, int l)
+size_t GameWidget::getIndex(size_t k, size_t l)
 {
     return(universeSize*k + l);
 }
@@ -81,8 +81,8 @@ QString GameWidget::dump()
 {
     char temp;
     QString master = "";
-    for(int k = 1; k <= universeSize; k++) {
-        for(int j = 1; j <= universeSize; j++) {
+    for(size_t k = 1; k <= universeSize; k++) {
+        for(size_t j = 1; j <= universeSize; j++) {
             if(universe[k*universeSize + j] == true) {
                 temp = '*';
             } else {
@@ -98,8 +98,8 @@ QString GameWidget::dump()
 void GameWidget::setDump(const QString &data)
 {
     int current = 0;
-    for(int k = 1; k <= universeSize; k++) {
-        for(int j = 1; j <= universeSize; j++) {
+    for(size_t k = 1; k <= universeSize; k++) {
+        for(size_t j = 1; j <= universeSize; j++) {
             universe[getIndex(k,j)] = data[current] == '*';
             current++;
         }
@@ -118,7 +118,7 @@ void GameWidget::setInterval(int msec)
     timer->setInterval(msec);
 }
 
-bool GameWidget::isAlive(int k, int j)
+bool GameWidget::isAlive(size_t k, size_t j)
 {
     int power = 0;
     power += universe[getIndex(k+1,j)]; //universe[(k+1)*universeSize +  j];
@@ -138,9 +138,9 @@ void GameWidget::newGeneration()
 {
     if(generations < 0)
         generations++;
-    int notChanged=0;
-    for(int k=1; k <= universeSize; k++) {
-        for(int j=1; j <= universeSize; j++) {
+    size_t notChanged=0;
+    for(size_t k=1; k <= universeSize; k++) {
+        for(size_t j=1; j <= universeSize; j++) {
             next[getIndex(k,j)] = isAlive(k, j);
             if(next[getIndex(k,j)] == universe[getIndex(k,j)])
                 notChanged++;
@@ -155,8 +155,8 @@ void GameWidget::newGeneration()
         gameEnds(true);
         return;
     }
-    for(int k=1; k <= universeSize; k++) {
-        for(int j=1; j <= universeSize; j++) {
+    for(size_t k=1; k <= universeSize; k++) {
+        for(size_t j=1; j <= universeSize; j++) {
             universe[getIndex(k,j)] = next[getIndex(k,j)];
         }
     }

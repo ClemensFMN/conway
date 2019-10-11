@@ -8,7 +8,7 @@ class GameWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit GameWidget(QWidget *parent = 0);
+    explicit GameWidget(QWidget *parent = nullptr);
     ~GameWidget();
 
 protected:
@@ -27,8 +27,8 @@ public slots:
     void stopGame(); // finish
     void clear(); // clear
 
-    int cellNumber(); // number of the cells in one row
-    void setCellNumber(const int &s); // set number of the cells in one row
+    size_t cellNumber(); // number of the cells in one row
+    void setCellNumber(const size_t &s); // set number of the cells in one row
 
     int interval(); // interval between generations
     void setInterval(int msec); // set interval between generations
@@ -50,10 +50,10 @@ private:
     int generations;
     bool* universe; // map
     bool* next; // map
-    int universeSize;
-    bool isAlive(int k, int j); // return true if universe[k][j] accept rules
+    size_t universeSize;
+    bool isAlive(size_t k, size_t j); // return true if universe[k][j] accept rules
     void resetUniverse();// reset the size of universe
-    int getIndex(int k, int l);
+    size_t getIndex(size_t k, size_t l);
 };
 
 #endif // GAMEWIDGET_H
