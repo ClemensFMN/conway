@@ -26,6 +26,7 @@ public slots:
     void startGame(const int &number = -1); // start
     void stopGame(); // finish
     void clear(); // clear
+    void fillRand();
 
     size_t cellNumber(); // number of the cells in one row
     void setCellNumber(const size_t &s); // set number of the cells in one row

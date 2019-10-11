@@ -5,6 +5,7 @@
 #include <QRectF>
 #include <QPainter>
 #include <qmath.h>
+#include <QRandomGenerator>
 #include "gamewidget.h"
 
 GameWidget::GameWidget(QWidget *parent) :
@@ -18,8 +19,8 @@ GameWidget::GameWidget(QWidget *parent) :
     universe = new int[(universeSize + 2) * (universeSize + 2)];
     next = new int[(universeSize + 2) * (universeSize + 2)];
     connect(timer, SIGNAL(timeout()), this, SLOT(newGeneration()));
-    memset(universe, false, sizeof(bool)*(universeSize + 2) * (universeSize + 2));
-    memset(next, false, sizeof(bool)*(universeSize + 2) * (universeSize + 2));
+    memset(universe, 0, sizeof(int)*(universeSize + 2) * (universeSize + 2));
+    memset(next, 0, sizeof(int)*(universeSize + 2) * (universeSize + 2));
 }
 
 GameWidget::~GameWidget()
@@ -44,6 +45,17 @@ void GameWidget::clear()
     for(size_t k = 1; k <= universeSize; k++) {
         for(size_t j = 1; j <= universeSize; j++) {
             universe[getIndex(k,j)] = 0;
+        }
+    }
+    gameEnds(true);
+    update();
+}
+
+void GameWidget::fillRand()
+{
+    for(size_t k = 1; k <= universeSize; k++) {
+        for(size_t j = 1; j <= universeSize; j++) {
+            universe[getIndex(k,j)] = QRandomGenerator::global()->bounded(0,2);
         }
     }
     gameEnds(true);

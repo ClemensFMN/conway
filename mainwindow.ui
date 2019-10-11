@@ -48,6 +48,13 @@
          </layout>
         </item>
         <item>
+         <widget class="QPushButton" name="fillRandButton">
+          <property name="text">
+           <string>Fill Randomly!</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QLabel" name="label">
           <property name="text">
            <string>Universe Size</string>

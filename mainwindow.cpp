@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->startButton, SIGNAL(clicked()), game,SLOT(startGame()));
     connect(ui->stopButton, SIGNAL(clicked()), game,SLOT(stopGame()));
     connect(ui->clearButton, SIGNAL(clicked()), game,SLOT(clear()));
+    connect(ui->fillRandButton, SIGNAL(clicked()), game,SLOT(fillRand()));
     connect(ui->iterInterval, SIGNAL(valueChanged(int)), game, SLOT(setInterval(int)));
     connect(ui->cellsControl, SIGNAL(valueChanged(int)), game, SLOT(setCellNumber(int)));
     connect(game,SIGNAL(environmentChanged(bool)),ui->cellsControl,SLOT(setDisabled(bool)));
