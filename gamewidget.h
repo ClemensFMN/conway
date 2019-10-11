@@ -48,10 +48,10 @@ private:
     QColor m_masterColor;
     QTimer* timer;
     int generations;
-    bool* universe; // map
-    bool* next; // map
+    int* universe; // map
+    int* next; // map
     size_t universeSize;
-    bool isAlive(size_t k, size_t j); // return true if universe[k][j] accept rules
+    int isAlive(size_t k, size_t j); // return true if universe[k][j] accept rules
     void resetUniverse();// reset the size of universe
     size_t getIndex(size_t k, size_t l);
 };

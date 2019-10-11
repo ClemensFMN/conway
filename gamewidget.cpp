@@ -15,8 +15,8 @@ GameWidget::GameWidget(QWidget *parent) :
 {
     timer->setInterval(300);
     m_masterColor = "#000";
-    universe = new bool[(universeSize + 2) * (universeSize + 2)];
-    next = new bool[(universeSize + 2) * (universeSize + 2)];
+    universe = new int[(universeSize + 2) * (universeSize + 2)];
+    next = new int[(universeSize + 2) * (universeSize + 2)];
     connect(timer, SIGNAL(timeout()), this, SLOT(newGeneration()));
     memset(universe, false, sizeof(bool)*(universeSize + 2) * (universeSize + 2));
     memset(next, false, sizeof(bool)*(universeSize + 2) * (universeSize + 2));
@@ -43,7 +43,7 @@ void GameWidget::clear()
 {
     for(size_t k = 1; k <= universeSize; k++) {
         for(size_t j = 1; j <= universeSize; j++) {
-            universe[getIndex(k,j)] = false;
+            universe[getIndex(k,j)] = 0;
         }
     }
     gameEnds(true);
@@ -66,10 +66,10 @@ void GameWidget::resetUniverse()
 {
     delete [] universe;
     delete [] next;
-    universe = new bool[(universeSize + 2) * (universeSize + 2)];
-    next = new bool[(universeSize + 2) * (universeSize + 2)];
-    memset(universe, false, sizeof(bool)*(universeSize + 2) * (universeSize + 2));
-    memset(next, false, sizeof(bool)*(universeSize + 2) * (universeSize + 2));
+    universe = new int[(universeSize + 2) * (universeSize + 2)];
+    next = new int[(universeSize + 2) * (universeSize + 2)];
+    memset(universe, 0, sizeof(int)*(universeSize + 2) * (universeSize + 2));
+    memset(next, 0, sizeof(int)*(universeSize + 2) * (universeSize + 2));
 }
 
 size_t GameWidget::getIndex(size_t k, size_t l)
@@ -83,7 +83,7 @@ QString GameWidget::dump()
     QString master = "";
     for(size_t k = 1; k <= universeSize; k++) {
         for(size_t j = 1; j <= universeSize; j++) {
-            if(universe[k*universeSize + j] == true) {
+            if(universe[k*universeSize + j] == 1) {
                 temp = '*';
             } else {
                 temp = 'o';
@@ -100,7 +100,9 @@ void GameWidget::setDump(const QString &data)
     int current = 0;
     for(size_t k = 1; k <= universeSize; k++) {
         for(size_t j = 1; j <= universeSize; j++) {
-            universe[getIndex(k,j)] = data[current] == '*';
+            if(data[current] == '*') {
+                universe[getIndex(k,j)] = 1;
+            }
             current++;
         }
         current++;
@@ -118,7 +120,7 @@ void GameWidget::setInterval(int msec)
     timer->setInterval(msec);
 }
 
-bool GameWidget::isAlive(size_t k, size_t j)
+int GameWidget::isAlive(size_t k, size_t j)
 {
     int power = 0;
     power += universe[getIndex(k+1,j)]; //universe[(k+1)*universeSize +  j];
@@ -129,9 +131,9 @@ bool GameWidget::isAlive(size_t k, size_t j)
     power += universe[getIndex(k-1,j+1)]; //universe[(k-1)*universeSize + (j+1)];
     power += universe[getIndex(k-1,j-1)]; //universe[(k-1)*universeSize + (j-1)];
     power += universe[getIndex(k+1,j+1)]; //universe[(k+1)*universeSize +  (j+1)];
-    if (((universe[getIndex(k,j)] == true) && (power == 2)) || (power == 3))
-           return true;
-    return false;
+    if (((universe[getIndex(k,j)] == 1) && (power == 2)) || (power == 3))
+           return 1;
+    return 0;
 }
 
 void GameWidget::newGeneration()
@@ -187,7 +189,7 @@ void GameWidget::mousePressEvent(QMouseEvent *e)
     double cellHeight = (double)height()/universeSize;
     int k = floor(e->y()/cellHeight)+1;
     int j = floor(e->x()/cellWidth)+1;
-    universe[getIndex(k,j)] = !universe[getIndex(k,j)];
+    universe[getIndex(k,j)] = 1 - universe[getIndex(k,j)];
     update();
 }
 
@@ -199,7 +201,7 @@ void GameWidget::mouseMoveEvent(QMouseEvent *e)
     int j = floor(e->x()/cellWidth)+1;
     int currentLocation = getIndex(k,j);
     if(!universe[currentLocation]){                //if current cell is empty,fill in it
-        universe [currentLocation]= !universe[currentLocation];
+        universe [currentLocation]= 1 - universe[currentLocation];
         update();
     }
 }
@@ -225,7 +227,7 @@ void GameWidget::paintUniverse(QPainter &p)
     double cellHeight = (double)height()/universeSize;
     for(int k=1; k <= universeSize; k++) {
         for(int j=1; j <= universeSize; j++) {
-            if(universe[k*universeSize + j] == true) { // if there is any sense to paint it
+            if(universe[getIndex(k,j)] == 1) { // if there is any sense to paint it
                 qreal left = (qreal)(cellWidth*j-cellWidth); // margin from left
                 qreal top  = (qreal)(cellHeight*k-cellHeight); // margin from top
                 QRectF r(left, top, (qreal)cellWidth, (qreal)cellHeight);
