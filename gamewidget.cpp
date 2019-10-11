@@ -43,7 +43,7 @@ void GameWidget::clear()
 {
     for(int k = 1; k <= universeSize; k++) {
         for(int j = 1; j <= universeSize; j++) {
-            universe[k*universeSize + j] = false;
+            universe[getIndex(k,j)] = false;
         }
     }
     gameEnds(true);
@@ -72,6 +72,11 @@ void GameWidget::resetUniverse()
     memset(next, false, sizeof(bool)*(universeSize + 2) * (universeSize + 2));
 }
 
+int GameWidget::getIndex(int k, int l)
+{
+    return(universeSize*k + l);
+}
+
 QString GameWidget::dump()
 {
     char temp;
@@ -95,7 +100,7 @@ void GameWidget::setDump(const QString &data)
     int current = 0;
     for(int k = 1; k <= universeSize; k++) {
         for(int j = 1; j <= universeSize; j++) {
-            universe[k*universeSize + j] = data[current] == '*';
+            universe[getIndex(k,j)] = data[current] == '*';
             current++;
         }
         current++;
@@ -116,15 +121,15 @@ void GameWidget::setInterval(int msec)
 bool GameWidget::isAlive(int k, int j)
 {
     int power = 0;
-    power += universe[(k+1)*universeSize +  j];
-    power += universe[(k-1)*universeSize + j];
-    power += universe[k*universeSize + (j+1)];
-    power += universe[k*universeSize + (j-1)];
-    power += universe[(k+1)*universeSize + ( j-1)];
-    power += universe[(k-1)*universeSize + (j+1)];
-    power += universe[(k-1)*universeSize + (j-1)];
-    power += universe[(k+1)*universeSize +  (j+1)];
-    if (((universe[k*universeSize + j] == true) && (power == 2)) || (power == 3))
+    power += universe[getIndex(k+1,j)]; //universe[(k+1)*universeSize +  j];
+    power += universe[getIndex(k-1,j)]; //universe[(k-1)*universeSize + j];
+    power += universe[getIndex(k,j+1)]; //universe[k*universeSize + (j+1)];
+    power += universe[getIndex(k,j-1)]; //universe[k*universeSize + (j-1)];
+    power += universe[getIndex(k+1,j-1)]; //universe[(k+1)*universeSize + ( j-1)];
+    power += universe[getIndex(k-1,j+1)]; //universe[(k-1)*universeSize + (j+1)];
+    power += universe[getIndex(k-1,j-1)]; //universe[(k-1)*universeSize + (j-1)];
+    power += universe[getIndex(k+1,j+1)]; //universe[(k+1)*universeSize +  (j+1)];
+    if (((universe[getIndex(k,j)] == true) && (power == 2)) || (power == 3))
            return true;
     return false;
 }
@@ -136,8 +141,8 @@ void GameWidget::newGeneration()
     int notChanged=0;
     for(int k=1; k <= universeSize; k++) {
         for(int j=1; j <= universeSize; j++) {
-            next[k*universeSize + j] = isAlive(k, j);
-            if(next[k*universeSize + j] == universe[k*universeSize + j])
+            next[getIndex(k,j)] = isAlive(k, j);
+            if(next[getIndex(k,j)] == universe[getIndex(k,j)])
                 notChanged++;
         }
     }
@@ -152,7 +157,7 @@ void GameWidget::newGeneration()
     }
     for(int k=1; k <= universeSize; k++) {
         for(int j=1; j <= universeSize; j++) {
-            universe[k*universeSize + j] = next[k*universeSize + j];
+            universe[getIndex(k,j)] = next[getIndex(k,j)];
         }
     }
     update();
@@ -182,7 +187,7 @@ void GameWidget::mousePressEvent(QMouseEvent *e)
     double cellHeight = (double)height()/universeSize;
     int k = floor(e->y()/cellHeight)+1;
     int j = floor(e->x()/cellWidth)+1;
-    universe[k*universeSize + j] = !universe[k*universeSize + j];
+    universe[getIndex(k,j)] = !universe[getIndex(k,j)];
     update();
 }
 
@@ -192,7 +197,7 @@ void GameWidget::mouseMoveEvent(QMouseEvent *e)
     double cellHeight = (double)height()/universeSize;
     int k = floor(e->y()/cellHeight)+1;
     int j = floor(e->x()/cellWidth)+1;
-    int currentLocation = k*universeSize + j;
+    int currentLocation = getIndex(k,j);
     if(!universe[currentLocation]){                //if current cell is empty,fill in it
         universe [currentLocation]= !universe[currentLocation];
         update();

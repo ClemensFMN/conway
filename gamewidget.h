@@ -53,6 +53,7 @@ private:
     int universeSize;
     bool isAlive(int k, int j); // return true if universe[k][j] accept rules
     void resetUniverse();// reset the size of universe
+    int getIndex(int k, int l);
 };
 
 #endif // GAMEWIDGET_H
